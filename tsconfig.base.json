@@ -17,7 +17,7 @@
     "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
     "alwaysStrict": true,
-    "esModulelnterop": true,
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "es2022",
     "types": [],
