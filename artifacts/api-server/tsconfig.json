@@ -4,7 +4,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "types": ["node"],
-    'esModulelnterop'true
+    'esModulelnterop':true
   },
   "include": ["src"],
   "references": [
