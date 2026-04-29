@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+:root {
+  --brand-green: #0f4c3a;
+  --brand-green-dark: #0a3328;
+  --brand-green-light: #1a6b54;
+  --brand-gold: #c9a961;
+  --brand-gold-light: #e0c789;
+  --brand-cream: #faf7f0;
+}
+
+html, body, #root {
+  height: 100%;
+  /* Use dynamic viewport height on browsers that support it
+     (Safari 15.4+, Chrome 108+) so the bottom UI isn't hidden under
+     the mobile address bar / home indicator. Falls back to 100% above. */
+  height: 100dvh;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #f5f5f0;
+  color: #1a1a1a;
+  /* Mobile polish: kill blue tap flash, stop rubber-band scroll, lock font scaling */
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* iOS Safari auto-zooms when a focused input has font-size < 16px.
+   Force 16px on phone-sized viewports to prevent the page jump. */
+@media (max-width: 768px) {
+  input[type="text"],
+  input[type="number"],
+  input[type="search"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="date"],
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* Safe-area helpers for notched phones / home indicators */
+.safe-pb { padding-bottom: env(safe-area-inset-bottom); }
+.safe-pt { padding-top: env(safe-area-inset-top); }
+
+.text-brand-green { color: var(--brand-green); }
+.text-brand-gold { color: var(--brand-gold); }
+.bg-brand-green { background-color: var(--brand-green); }
+.bg-brand-green-dark { background-color: var(--brand-green-dark); }
+.bg-brand-green-light { background-color: var(--brand-green-light); }
+.bg-brand-gold { background-color: var(--brand-gold); }
+.bg-brand-cream { background-color: var(--brand-cream); }
+.border-brand-green { border-color: var(--brand-green); }
+.border-brand-gold { border-color: var(--brand-gold); }
+
+.scrollbar-thin::-webkit-scrollbar { width: 6px; height: 6px; }
+.scrollbar-thin::-webkit-scrollbar-thumb { background: #c9a961; border-radius: 3px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+
+/* Print styles */
+@media print {
+  /* Reset page chrome — kill watermark backgrounds, modal backdrops, etc. */
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    background-image: none !important;
+    color: #000 !important;
+    width: auto !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body * { visibility: hidden; box-shadow: none !important; text-shadow: none !important; }
+  .no-print { display: none !important; }
+
+  /* ---------- 80mm thermal receipt ----------
+     80mm roll has ~72mm printable area on most thermal heads (Epson TM, Xprinter,
+     Bixolon, etc). We render at 72mm with 2mm side padding for a safe margin.    */
+  #print-receipt, #print-receipt * {
+    visibility: visible;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #print-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 72mm;
+    max-width: 72mm;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 2mm 2mm 6mm 2mm;
+    margin: 0;
+    font-family: 'Courier New', 'Liberation Mono', 'Consolas', monospace;
+    font-size: 11px;
+    line-height: 1.35;
+    color: #000 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    page: receipt-page;
+  }
+  /* Sharp solid lines print better on thermal heads than dashed */
+  #print-receipt .border-dashed,
+  #print-receipt [class*="border-dashed"] {
+    border-style: solid !important;
+    border-color: #000 !important;
+  }
+  #print-receipt .border-double {
+    border-color: #000 !important;
+  }
+  /* Force the QR code modules to render in pure black so thermal heads pick
+     them up — but KEEP the QR's white background rect white. Without this,
+     the background <rect> would also be forced to black, turning the entire
+     QR into a solid black square. */
+  #print-receipt svg { color: #000 !important; }
+  #print-receipt svg path { fill: #000 !important; }
+  #print-receipt .qr-print {
+    background: #fff !important;
+  }
+  #print-receipt .qr-print svg {
+    background: #fff !important;
+  }
+  #print-receipt .qr-print svg rect[fill="#FFFFFF"],
+  #print-receipt .qr-print svg rect[fill="#ffffff"],
+  #print-receipt .qr-print svg rect[fill="white"] {
+    fill: #FFFFFF !important;
+  }
+  #print-receipt .qr-print svg path {
+    fill: #000000 !important;
+  }
+  /* Strip any tailwind gray text colors so thermal output stays crisp black */
+  #print-receipt .text-gray-600,
+  #print-receipt .text-gray-700,
+  #print-receipt [class*="text-gray-"] {
+    color: #000 !important;
+  }
+
+  /* ---------- 80mm thermal token ticket ---------- */
+  #print-ticket, #print-ticket * {
+    visibility: visible;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  #print-ticket {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 72mm;
+    max-width: 72mm;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 4mm 2mm 8mm 2mm;
+    margin: 0;
+    font-family: 'Courier New', 'Liberation Mono', 'Consolas', monospace;
+    color: #000 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+    page: receipt-page;
+  }
+  #print-ticket .border-dashed,
+  #print-ticket [class*="border-dashed"] {
+    border-style: solid !important;
+    border-color: #000 !important;
+  }
+  #print-ticket [class*="text-gray-"],
+  #print-ticket .text-brand-green-dark,
+  #print-ticket .text-brand-green {
+    color: #000 !important;
+  }
+  /* Keep the gold "Asrar" headline visible on thermal output */
+  #print-ticket .text-brand-gold {
+    color: #000 !important;
+  }
+  /* The big token number should be huge and unmistakable on the print */
+  #print-ticket .text-\\[64px\\] {
+    color: #000 !important;
+    -webkit-text-stroke: 0.5px #000;
+  }
+
+  /* ---------- A4 VAT report ---------- */
+  #vat-report, #vat-report * { visibility: visible; }
+  #vat-report {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 10mm;
+    color: #000 !important;
+    background: #fff !important;
+    page: report-page;
+  }
+
+  /* Named pages: receipt uses 80mm roll, report uses A4 */
+  @page receipt-page {
+    size: 80mm auto;
+    margin: 0;
+  }
+  @page report-page {
+    size: A4;
+    margin: 10mm;
+  }
+  /* Fallback for any unnamed printable element */
+  @page {
+    margin: 0;
+  }
+}
